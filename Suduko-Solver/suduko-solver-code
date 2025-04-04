@@ -1,0 +1,72 @@
+import random
+
+def is_valid(board, row, col, num):
+    for i in range(9):
+        if board[row][i] == num or board[i][col] == num:
+            return False
+    
+    start_row, start_col = 3 * (row // 3), 3 * (col // 3)
+    for i in range(3):
+        for j in range(3):
+            if board[start_row + i][start_col + j] == num:
+                return False
+    
+    return True
+
+def solve_sudoku(board):
+    for row in range(9):
+        for col in range(9):
+            if board[row][col] == 0:
+                for num in range(1, 10):
+                    if is_valid(board, row, col, num):
+                        board[row][col] = num
+                        if solve_sudoku(board):
+                            return True
+                        board[row][col] = 0
+                return False
+    return True
+
+def print_board(board):
+    for row in board:
+        print(" ".join(str(num) for num in row))
+
+def generate_full_sudoku():
+    board = [[0 for _ in range(9)] for _ in range(9)]
+    numbers = list(range(1, 10))
+    
+    for i in range(9):
+        num = numbers.pop(random.randint(0, len(numbers) - 1))
+        board[i][i] = num
+    
+    solve_sudoku(board)
+    return board
+
+def remove_numbers(board, difficulty=40):
+    puzzle = [row[:] for row in board]
+    for _ in range(difficulty):
+        row, col = random.randint(0, 8), random.randint(0, 8)
+        while puzzle[row][col] == 0:
+            row, col = random.randint(0, 8), random.randint(0, 8)
+        puzzle[row][col] = 0
+    return puzzle
+
+def play_sudoku():
+    while True:
+        print("Generating a random Sudoku puzzle...")
+        full_board = generate_full_sudoku()
+        puzzle_board = remove_numbers(full_board)
+        
+        print("Sudoku Puzzle:")
+        print_board(puzzle_board)
+        
+        if solve_sudoku(puzzle_board):
+            print("Solved Sudoku:")
+            print_board(puzzle_board)
+        else:
+            print("No solution exists.")
+        
+        play_again = input("Do you want to generate another Sudoku? (yes/no): ").strip().lower()
+        if play_again != 'yes':
+            break
+
+play_sudoku()
