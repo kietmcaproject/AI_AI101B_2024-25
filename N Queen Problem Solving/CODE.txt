@@ -1,0 +1,60 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+def draw_chessboard(n, solution):
+    """Draws a proper chessboard and places queens using '♛'"""
+    fig, ax = plt.subplots(figsize=(n, n))
+
+    # Draw the chessboard with alternating colors
+    for i in range(n):
+        for j in range(n):
+            color = "cornsilk" if (i + j) % 2 == 0 else "saddlebrown"
+            ax.add_patch(plt.Rectangle((j, n-1-i), 1, 1, color=color))
+
+    # Place queens using Unicode symbol '♛'
+    for row, col in solution:
+        ax.text(col + 0.5, n - 1 - row + 0.5, '♛', fontsize=40, ha='center', va='center', color="black")
+
+    # Set board limits and remove axis labels
+    ax.set_xlim(0, n)
+    ax.set_ylim(0, n)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.set_xticklabels([])
+    ax.set_yticklabels([])
+    ax.set_frame_on(False)
+
+    plt.show()
+
+def is_safe(board, row, col, n):
+    """Checks if a queen can be placed at board[row][col]"""
+    for i in range(row):
+        if board[i] == col or abs(board[i] - col) == abs(i - row):
+            return False
+    return True
+
+def solve_n_queens(n, row=0, board=[], solutions=[]):
+    """Backtracking solution to N-Queens"""
+    if row == n:
+        solutions.append(board[:])
+        return
+
+    for col in range(n):
+        if is_safe(board, row, col, n):
+            board.append(col)
+            solve_n_queens(n, row + 1, board, solutions)
+            board.pop()
+
+def visualize_n_queens(n):
+    """Finds and visualizes the first valid N-Queens solution"""
+    solutions = []
+    solve_n_queens(n, board=[], solutions=solutions)
+
+    if solutions:
+        draw_chessboard(n, [(r, c) for r, c in enumerate(solutions[0])])
+    else:
+        print("No solution found.")
+
+# Run visualization for 8-Queens
+visualize_n_queens(8)
+
