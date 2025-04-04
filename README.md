@@ -1,1 +1,1 @@
-# AI_AI101B_2024-25
+credit card scored prediction
