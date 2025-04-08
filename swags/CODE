@@ -1,0 +1,32 @@
+import random
+
+def c_choice():
+    return random.choice(["rock", "paper", "scissors"])
+
+def u_choice():
+    while True:
+        choice = input("Enter rock, paper, or scissors: ").strip().lower()
+        if choice in ["rock", "paper", "scissors"]:
+            return choice
+        print("Invalid choice. Please try again.")
+
+def winner(user, computer):
+    if user == computer:
+         return "It's a tie!"
+    elif (user == "rock" and computer == "scissors") or \
+         (user == "paper" and computer == "rock") or \
+         (user == "scissors" and computer == "paper"):
+         return "Congratulations! Its celebration time"
+    else:
+         return "💀 You lost! Better luck next time! 💀"
+
+def play():
+    user_choice = u_choice()
+    computer_choice = c_choice()
+    print(f"You chose: {user_choice}")
+    print(f"Computer chose: {computer_choice}")
+    result = winner(user_choice, computer_choice)
+    print(result)
+
+if __name__ == "__main__":
+    play()
