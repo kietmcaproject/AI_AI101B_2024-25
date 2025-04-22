@@ -46,9 +46,3 @@ This project allows users to upload an image or use their webcam to detect facia
 - TensorFlow & Keras  
 - Django Web Framework  
 
-## 📬 Feedback
-
-Got suggestions or feature requests?  
-Open an issue or connect via [LinkedIn](https://www.linkedin.com/in/nishantraikwar/)!  
-
-⭐ **Don’t forget to star the repo if you like it!**
