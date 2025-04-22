@@ -1,0 +1,74 @@
+!pip install SpeechRecognition pydub
+!apt-get install ffmpeg
+from google.colab import files
+
+uploaded = files.upload()
+
+import speech_recognition as sr
+from pydub import AudioSegment
+import os
+
+# Initialize recognizer
+recognizer = sr.Recognizer()
+
+# Get the uploaded file name
+file_name = list(uploaded.keys())[0]
+audio_format = file_name.split('.')[-1]
+
+# Convert to WAV if necessary
+if audio_format != 'wav':
+    sound = AudioSegment.from_file(file_name, format=audio_format)
+    sound.export("converted.wav", format="wav")
+    audio_path = "converted.wav"
+else:
+    audio_path = file_name
+
+# Transcribe
+with sr.AudioFile(audio_path) as source:
+    audio_data = recognizer.record(source)
+    print("Converting audio to text...")
+    try:
+        text = recognizer.recognize_google(audio_data)
+        print("\n✅ Transcribed Text:\n", text)
+    except sr.UnknownValueError:
+        print("❌ Could not understand the audio.")
+    except sr.RequestError as e:
+        print(f"🔌 Could not connect to the API: {e}")
+
+!pip install SpeechRecognition pydub
+
+
+import speech_recognition as sr
+from pydub import AudioSegment
+import os
+
+# 🎙 Initialize Recognizer
+recognizer = sr.Recognizer()
+
+# 🔘 Menu (Only Microphone Option)
+print("Choose an option:")
+print("1. 🎤 Use Microphone")
+choice = input("Enter 1: ")
+
+if choice == "1":
+    # 🎙 Speech from Microphone
+    try:
+        with sr.Microphone() as source:
+            print("\nListening... Please speak clearly.")
+            recognizer.adjust_for_ambient_noise(source)
+            audio = recognizer.listen(source)
+            print("Converting speech to text...")
+
+            # Google Web Speech API
+            text = recognizer.recognize_google(audio)
+            print("\n✅ You said:\n", text)
+
+    except sr.UnknownValueError:
+        print("❌ Could not understand the audio.")
+    except sr.RequestError as e:
+        print(f"🔌 Could not connect to the API: {e}")
+    except Exception as e:
+        print("⚠ Error:", e)
+
+else:
+    print("❗Invalid choice. Please enter 1.")
