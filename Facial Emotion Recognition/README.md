@@ -1,4 +1,4 @@
-# 😊 Emotion Detection AI Web App (Django + DeepFace)
+# 😊 Facial Emotion Recognition AI Web App (Django + DeepFace)
 
 Welcome to the Emotion Detection AI Web App!  
 This project allows users to upload an image or use their webcam to detect facial emotions using DeepFace and OpenCV, all wrapped in a clean Django interface.
@@ -45,10 +45,6 @@ This project allows users to upload an image or use their webcam to detect facia
 - DeepFace by Serengil  
 - TensorFlow & Keras  
 - Django Web Framework  
-
-## ❤️ Made With Love
-
-Crafted with care and caffeine by **Nishant** ☕  
 
 ## 📬 Feedback
 
