@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Email Spam Classifier</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <!--  Background Video -->
+    <video autoplay muted loop id="bgVideo">
+        <source src="https://videos.pexels.com/video-files/5473967/5473967-uhd_2732_1440_25fps.mp4" type="video/mp4">
+    </video>
+
+    <div class="container">
+       
+        <img src="{{ url_for('static', filename='images/email.png') }}" class="icon" alt="Mail Icon">
+
+        <h1>Email Spam Classifier</h1>
+
+        <form action="/predict" method="post">
+            <textarea name="message" placeholder="Type or paste your email message here..."></textarea>
+            <button type="submit">Check</button>
+        </form>
+
+        {% if prediction %}
+    <div class="result {% if prediction == 'Spam' %}spam{% else %}ham{% endif %}">
+        📩 Prediction: <strong>{{ prediction }}</strong><br>
+
+        {% if prediction == "Spam" %}
+            <img src="{{ url_for('static', filename='images/ad.png') }}" class="result-img" alt="Spam">
+        {% else %}
+            <img src="{{ url_for('static', filename='images/shield.png') }}" class="result-img" alt="Ham">
+        {% endif %}
+    </div>
+{% endif %}
+
+    </div>
+
+</body>
+</html>
