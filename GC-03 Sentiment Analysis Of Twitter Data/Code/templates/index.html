@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Twitter Sentiment Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+    <div class="container">
+       <h1>
+
+  <img src="{{ url_for('static', filename='images/74893553_9800543.jpg') }}" alt="Twitter Logo" class="twitter-logo-inline">
+  Twitter Sentiment Analysis
+</h1>
+
+
+
+        <form method="post" id="tweetForm">
+            <textarea name="tweet" placeholder="Enter tweet text here..." required>{{ tweet }}</textarea>
+            <br>
+            <button type="submit">Analyze Sentiment</button>
+        </form>
+
+        {% if sentiment %}
+            <div class="result">
+                <p><strong>Sentiment:</strong> {{ sentiment }}</p>
+                <p><strong>Prediction Score: </strong> {{ '%.2f'|format(confidence) }}%</p>
+            </div>
+
+           
+            <button type="button" class="another-btn" onclick="window.location.href='/'">Analyze Another Tweet</button>
+        {% endif %}
+    </div>
+</body>
+</html>
