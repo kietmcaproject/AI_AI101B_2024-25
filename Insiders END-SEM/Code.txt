@@ -1,0 +1,84 @@
+# Install dependencies
+!pip install -q transformers prophet
+
+# Import required libraries
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import re
+from transformers import pipeline
+from prophet import Prophet
+
+# Load dataset (already available in your environment)
+df = pd.read_csv("/content/Corona_NLP_test.csv", encoding='latin1')
+df = df[['TweetAt', 'OriginalTweet', 'Sentiment']]
+df['TweetAt'] = pd.to_datetime(df['TweetAt'], dayfirst=True)
+
+
+# Clean tweet text
+def clean_tweet(text):
+    text = text.lower()
+    text = re.sub(r"http\S+|@\S+|#\S+", "", text)
+    text = re.sub(r"[^a-z\s]", "", text)
+    text = re.sub(r"\s+", " ", text)
+    return text.strip()
+
+df['CleanTweet'] = df['OriginalTweet'].apply(clean_tweet)
+
+# Sentiment Analysis with Transformers
+classifier = pipeline("sentiment-analysis", model="nlptown/bert-base-multilingual-uncased-sentiment")
+sample_df = df.head(200).copy()
+sample_df['PredictedSentiment'] = sample_df['CleanTweet'].apply(lambda x: classifier(x[:512])[0]['label'])
+
+# Simplify sentiment labels
+def simplify(label):
+    if "1" in label or "2" in label:
+        return "Negative"
+    elif "3" in label:
+        return "Neutral"
+    else:
+        return "Positive"
+
+sample_df['PredictedSentiment'] = sample_df['PredictedSentiment'].apply(simplify)
+
+# Plot sentiment distributions
+plt.figure(figsize=(12, 5))
+plt.subplot(1, 2, 1)
+sns.countplot(data=sample_df, x='Sentiment')
+plt.title("Original Sentiment")
+
+plt.subplot(1, 2, 2)
+sns.countplot(data=sample_df, x='PredictedSentiment')
+plt.title("Predicted Sentiment (BERT)")
+plt.tight_layout()
+plt.show()
+
+# Time Series Aggregation
+time_sentiment = sample_df.groupby(['TweetAt', 'PredictedSentiment']).size().reset_index(name='Count')
+pivot_df = time_sentiment.pivot(index='TweetAt', columns='PredictedSentiment', values='Count').fillna(0)
+
+# Plot sentiment over time
+pivot_df.plot(marker='o', figsize=(12,6))
+plt.title("Predicted Sentiment Over Time")
+plt.ylabel("Tweet Count")
+plt.grid(True)
+plt.show()
+
+# Forecast with Prophet
+positive_ts = pivot_df[['Positive']].reset_index().rename(columns={'TweetAt': 'ds', 'Positive': 'y'})
+model = Prophet()
+model.fit(positive_ts)
+future = model.make_future_dataframe(periods=7)
+forecast = model.predict(future)
+
+# Forecast Plot
+model.plot(forecast)
+plt.title("Forecast of Positive Tweets")
+plt.xlabel("Date")
+plt.ylabel("Tweet Volume")
+plt.show()
+
+# Component plot
+model.plot_components(forecast)
+plt.show()
