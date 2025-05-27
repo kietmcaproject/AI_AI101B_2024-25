@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>YOLOv5 Object Detection</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>YOLOv5 Object Detection</h1>
+    <form method="POST" enctype="multipart/form-data" class="upload-form">
+      <input type="file" name="image" accept="image/*" required>
+      <button type="submit">Detect Objects</button>
+    </form>
+
+    {% if result_img %}
+    <div class="result-section">
+      <h2>Detection Result</h2>
+      <img src="{{ result_img }}" alt="Detected Image">
+    </div>
+    {% endif %}
+  </div>
+</body>
+</html>
